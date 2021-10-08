@@ -1,32 +1,15 @@
 import { figures } from "./modules/storage.js";
 
-const BODY = document.querySelector("body");
+const WHEEL = document.querySelector(".wheel_area");
+const TABLE = document.querySelector(".table__figures");
 
-createMainContent();
+fillWheelContent();
+fillTableContent(figures);
 
-function createMainContent() {
+function fillWheelContent() {
   let fragment = document.createDocumentFragment();
-  const main = document.createElement("main");
-  main.className = "main";
-
-  fragment.appendChild(main);
-
-  main.insertAdjacentHTML("beforeend", `${createTable()}`);
-  main.insertAdjacentHTML("beforeend", `${createWheel()}`);
-  BODY.appendChild(fragment);
-}
-
-function createTable() {
-  return `
-   <section class="table">
-     <span class="table__numbers"></span>
-     <ul class="table__figures"></ul>
-   </section>`;
-}
-
-function createWheel() {
-  return `<section class="wheel_area">
-      <span class="wheel_area__text">testwork</span>
+  fragment.appendChild(WHEEL);
+  let template = `<span class="wheel_area__text">testwork</span>
       <div class="wheel_area__wheel">
         <div class="wheel_area__wheel__inner">
           <ul class="wheel_area__wheel__inner__list">
@@ -41,6 +24,21 @@ function createWheel() {
           class="wheel_area__buttons_wrap__stop">
           stop
         </button>
-      </div>
-    </section>`;
+      </div>`;
+  WHEEL.insertAdjacentHTML("beforeEnd", template);
+  document.querySelector(".main").appendChild(fragment);
+}
+
+function fillTableContent(figures) {
+  let fragment = document.createDocumentFragment();
+  fragment.appendChild(TABLE);
+
+  figures.forEach(function (figure, index) {
+    let template = `  
+           <li>
+      <img src=${figure} id=${index} alt=""></img>
+    </li>`;
+    TABLE.insertAdjacentHTML("beforeEnd", template);
+  });
+  document.querySelector(".table").appendChild(fragment);
 }

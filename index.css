@@ -27,6 +27,17 @@
   justify-items: center;
 }
 
+.table__figures li {
+  width: 86px;
+  height: 86px;
+  border: 3px solid #007000;
+  background: #fef9d0;
+}
+.table__figures img {
+  width: 90px;
+  height: 90px;
+}
+
 /* WHEEL */
 
 .wheel_area {
