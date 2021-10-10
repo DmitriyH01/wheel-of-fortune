@@ -1,4 +1,4 @@
-.main {
+body {
   position: relative;
   width: 1920px;
   height: 1080px;
@@ -82,19 +82,22 @@
   box-sizing: border-box;
 }
 .wheel_area__wheel__inner__list {
+  /* grid-template-rows: repeat(3, 1fr); */
   position: absolute;
-  display: grid;
+  /* display: grid; */
   width: 152px;
   height: 545px;
   left: 19px;
   top: 22px;
-  align-items: center;
+  /* align-items: center; */
   list-style-type: none;
   padding-inline-start: 0px;
   margin-block-start: 0px;
   margin-block-end: 0px;
+  overflow: hidden;
 }
 .wheel_area__wheel__inner__list__item {
+  padding: 20px 0px 20px 0px;
   width: 150px;
   height: 150px;
 }
