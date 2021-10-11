@@ -1,8 +1,11 @@
 import { figures } from "./modules/storage.js";
 gsap.registerPlugin(ScrollTrigger);
+var tl = gsap.timeline({ repeat: -1, delay: 0 });
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
+let ifFirstPress = true;
+// let count = 0;
 
 fillWheelContent(figures);
 fillTableContent(figures);
@@ -11,6 +14,12 @@ document
   .querySelector(".wheel_area__buttons_wrap__start")
   .addEventListener("click", () => {
     startWheel();
+  });
+document
+  .querySelector(".wheel_area__buttons_wrap__stop")
+  .addEventListener("click", () => {
+    tl.duration(8);
+    setTimeout(() => tl.pause(), 2500);
   });
 
 function fillWheelContent(arr) {
@@ -27,7 +36,7 @@ function fillWheelContent(arr) {
   // }
 
   arr.forEach((el, index) => {
-    let template = ` <li id = ${index} class="wheel_area__wheel__inner__list__item">
+    let template = ` <li id = "item${index}" class="wheel_area__wheel__inner__list__item">
           <img src=${el}></img>
         </li>`;
     WHEEL.insertAdjacentHTML("beforeEnd", template);
@@ -51,7 +60,6 @@ function fillTableContent(figures) {
 }
 
 function viewRandomFigures() {
-  doFirstTime++;
   count = randomInteger(0, 39);
 }
 
@@ -60,77 +68,17 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
-///////////GS|/////
 /////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
-function startWheel(params) {
-  const stagger = 0.05; // Used in our shifting tween
-  const BOXES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
-
-  const getShift = () =>
-    gsap.fromTo(
-      BOXES,
-      {
-        yPercent: 0,
-      },
-      {
-        yPercent: -4000,
-        stagger,
-        duration: 1,
-        ease: "none",
-      }
-    );
-
-  const LOOP = gsap
-    .timeline({
-      repeat: -1,
-    })
-    .add(getShift(), 0)
-    .add(getShift(), BOXES.length * stagger)
-    .add(getShift(), BOXES.length * stagger * 2);
+function startWheel() {
+  if (ifFirstPress) {
+    tl.to(".wheel_area__wheel__inner__list__item", {
+      y: -7040,
+      duration: 0.3,
+    });
+  }
+  ifFirstPress = false;
+  tl.duration(0.3);
+  tl.resume();
 }
-
-// const getShift = () =>
-//   gsap.fromTo(
-//     ".wheel_area__wheel__inner__list__item",
-//     {
-//       yPercent: 0,
-//     },
-//     {
-//       yPercent: -4000,
-//       stagger: 0.05,
-//       duration: 1,
-//       ease: "none",
-//     }
-//   );
-
-// const LOOP = gsap.timeline().add(getShift()).add(getShift()).add(getShift());
-
-// const SHIFT = gsap.fromTo(
-//   ".wheel_area__wheel__inner__list__item",
-//   {
-//     yPercent: 0,
-//   },
-//   {
-//     paused: true,
-//     yPercent: -5000,
-//     stagger: 0.05,
-//     duration: 2,
-//     repeat: -1,
-//     ease: "none",
-//   }
-// );
-
-// const DURATION = SHIFT.duration();
-
-// function startWheel() {
-//   gsap.to(SHIFT, {
-//     totalTime: DURATION,
-//     repeat: -1,
-//     duration: DURATION,
-//     ease: "none",
-//   });
-// }
-
-/////////////////////////////////////
