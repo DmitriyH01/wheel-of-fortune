@@ -21,7 +21,8 @@ document
 document
   .querySelector(".wheel_area__buttons_wrap__stop")
   .addEventListener("click", () => {
-    tl.duration(8);
+    tl.duration(7);
+    setTimeout(() => tl.duration(10), 1000);
     setTimeout(() => tl.pause(), 2500);
     setTimeout(() => fillWheelContent(figures), 2500);
   });
@@ -57,6 +58,21 @@ function fillWheelContent(figures) {
         </li>`;
       WHEEL.insertAdjacentHTML("beforeEnd", template);
     });
+    setTimeout(
+      () =>
+        gsap.fromTo(
+          ".wheel_area__wheel__inner__list__item",
+          {
+            y: 80,
+          },
+          {
+            y: 0,
+            ease: "bounce",
+            duration: 2,
+          }
+        ),
+      100
+    );
   }
 
   document.querySelector(".wheel_area__wheel__inner").appendChild(fragment);
