@@ -109,6 +109,7 @@ body {
   overflow: hidden;
 }
 .wheel_area__wheel__inner__list__item {
+  position: absolute;
   padding: 20px 0px 20px 0px;
   width: 150px;
   height: 150px;

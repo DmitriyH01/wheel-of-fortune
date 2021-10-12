@@ -1,9 +1,8 @@
 import { figures } from "./modules/storage.js";
-// gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
-let tl = gsap.timeline({ repeat: -1, delay: 0 }).add("same");
 
 let ifStartPress = true;
 let count = 0;
@@ -15,16 +14,14 @@ document
   .querySelector(".wheel_area__buttons_wrap__start")
   .addEventListener("click", () => {
     ifStartPress = true;
-
     fillWheelContent(figures);
     startWheel();
   });
 document
   .querySelector(".wheel_area__buttons_wrap__stop")
   .addEventListener("click", () => {
-    tl.duration(8);
-    setTimeout(() => tl.pause(0), 2500);
-    setTimeout(() => fillWheelContent(figures), 2500);
+    // setTimeout(() => tl.pause(0), 2500);
+    // setTimeout(() => fillWheelContent(figures), 2500);
   });
 
 function fillWheelContent(figures) {
@@ -86,13 +83,66 @@ function randomInteger(min, max) {
 /////////////////////////////////////////////////////////////////
 
 function startWheel() {
-  if (ifStartPress) {
-    tl.to(".wheel_area__wheel__inner__list__item", {
-      y: -7040,
-      duration: 0.3,
-    });
-    ifStartPress = false;
-  }
+  const FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+  const STAGGER = 0.5;
+  const DURATION = 1;
+  const OFFSET = 5 * STAGGER;
 
-  tl.play({ duration: 0.3 });
+  const LOOP = gsap.timeline({
+    paused: true,
+    repeat: -1,
+  });
+
+  const SHIFTS = [...FIGURES, ...FIGURES, ...FIGURES];
+
+  SHIFTS.forEach((BOX, index) => {
+    const BOX_TL = gsap
+      .timeline()
+      .fromTo(
+        BOX,
+        {
+          yPercent: 300,
+        },
+        {
+          yPercent: -300,
+          duration: 1,
+          ease: "none",
+          immediatRender: false,
+        },
+        0
+      )
+      .fromTo(
+        BOX,
+        {
+          // scale: 0,
+        },
+        {
+          // scale: 1,
+          repeat: 1,
+          zIndex: FIGURES.length,
+          // yoyo: true,
+          ease: "none",
+          duration: 0.5,
+          immediateRender: false,
+        },
+        0
+      );
+    LOOP.add(BOX_TL, index * STAGGER);
+  });
+
+  const CYCLE_DURATION = STAGGER * FIGURES.length;
+  const START_TIME = CYCLE_DURATION + DURATION * 0.5 + OFFSET;
+  const END_TIME = START_TIME + CYCLE_DURATION;
+  gsap.fromTo(
+    LOOP,
+    {
+      totalTime: START_TIME,
+    },
+    {
+      totalTime: END_TIME,
+      duration: 3,
+      ease: "none",
+      repeat: -1,
+    }
+  );
 }
