@@ -35,7 +35,25 @@ function createTl() {
 
   for (let index = 1; index <= 40; index++) {
     let template = `.fromTo(".item${index}",{y: 0} , {  y: -7420,
-    duration: 200,
+    duration: DURATION,
+    ease: "none",}).addLabel(
+      "figure${index}")`;
+    allItems.insertAdjacentHTML("beforeEnd", template);
+  }
+  console.log(fragment.textContent);
+}
+createTl();
+///////////////////////////////////////////      3      ////////////////////////////////////
+function createTl() {
+  let fragment = document.createDocumentFragment();
+  const allItems = document.createElement("span");
+  fragment.appendChild(allItems);
+
+  for (let index = 1; index <= 40; index++) {
+    let template = `.fromTo(".item${index}",{y: 600} , {  y: -170,
+    ease: "none", 
+    stagger: 0.25,
+    duration: 1,
     ease: "none",}).addLabel(
       "figure${index}")`;
     allItems.insertAdjacentHTML("beforeEnd", template);

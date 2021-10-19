@@ -111,22 +111,17 @@ body {
   /* overflow: hidden; */
 }
 .wheel_area__wheel__inner__list__item {
+  /* position: absolute; */
   display: grid;
   max-width: 150px;
   height: 150px;
   justify-content: center;
   align-items: center;
-
-  /* position: absolute; */
-  /* padding: 20px 0px 20px 0px; */
-  /* width: 150px; */
-  /* height: 150px; */
+  padding: 15px 0px 15px 0px;
 }
 .wheel_area__wheel__inner__list__item img {
   max-width: 150px;
   height: 150px;
-  object-fit: contain;
-  /* display: block; */
 }
 
 .wheel_area__wheel__rectangle_left {

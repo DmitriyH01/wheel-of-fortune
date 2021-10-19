@@ -1,5 +1,5 @@
 import { figures } from "./modules/storage.js";
-// gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
@@ -89,7 +89,7 @@ function fillWheelWithRandomThreeFigures() {
           duration: 2,
         }
       ),
-    100
+    7040
   );
   document.querySelector(".wheel_area__wheel__inner").appendChild(fragment);
 }
@@ -99,47 +99,47 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
-// Таким образом, используя метод getLabelTime (), вы можете получить это значение в переменной
-// а с помощью метода() вы получаете общее время на временной шкале.
+const BOXES = gsap.utils.toArray(".wheel_area__wheel__inner__list");
 
-// const= 2;
-const workListHeight = -160;
+const LOOP = gsap.timeline({
+  repeat: -1,
+  paused: true,
+});
 
-const tl = gsap
-  .timeline({ repeat: -1, paused: true })
-  .to(".wheel_area__wheel__inner__list", {
-    y: -7420,
-    duration: 200,
-    ease: "none",
-  });
+BOXES.forEach((BOX, index) => {
+  LOOP.fromTo(
+    BOX,
+    {
+      y: 0,
+    },
+    {
+      y: -7040,
+      duration: 1,
+      ease: "none",
+    }
+  );
+});
 
 function shiftWheel() {
   // console.log(tl.progress());
   // one.pause();
   if (startPressed) {
     // tl.progress(0).then(tl.pause());
-    tl.play();
+    LOOP.play();
     // tl0.3);
   }
   if (!startPressed) {
     console.log("stop");
-    // console.log(tl.labels);
+    console.log(LOOP.labels);
 
     // console.log(figure1.progress());
 
-    // gsap.to(tl, { progress: tl.labels["figure30"], ease: "none" });
-    tl.progress(0.50005).pause();
+    // gsap.to(tl, { progress: tl.labels["figure30"], ease: "none",duration:5 },"-=0.5");
+    LOOP.pause();
     // tl.pause();
 
     // tl.pause();
-    console.log(tl.totalProgress());
+    // console.log(tl.totalProgress());
   }
   /////////////////////////////////////////////////////////////////////
 }
-
-function generateSteps(count) {
-  count = 0.013685;
-  // console.log(count + count + count);
-  console.log(0.05308);
-}
-generateSteps();
