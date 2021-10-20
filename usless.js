@@ -50,12 +50,9 @@ function createTl() {
   fragment.appendChild(allItems);
 
   for (let index = 1; index <= 40; index++) {
-    let template = `.fromTo(".item${index}",{ id ="figure${index}" y: 600} , {  y: -170,
-    ease: "none", 
-    stagger: 0.25,
-    duration: 1,
+    let template = `.fromTo(".item${index}",{y: 0} , {  y: -7420,
     ease: "none",}).addLabel(
-      )`;
+      "figure${index}")`;
     allItems.insertAdjacentHTML("beforeEnd", template);
   }
   console.log(fragment.textContent);
