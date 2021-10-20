@@ -50,12 +50,26 @@ function createTl() {
   fragment.appendChild(allItems);
 
   for (let index = 1; index <= 40; index++) {
-    let template = `.fromTo(".item${index}",{y: 600} , {  y: -170,
+    let template = `.fromTo(".item${index}",{ id ="figure${index}" y: 600} , {  y: -170,
     ease: "none", 
     stagger: 0.25,
     duration: 1,
     ease: "none",}).addLabel(
-      "figure${index}")`;
+      )`;
+    allItems.insertAdjacentHTML("beforeEnd", template);
+  }
+  console.log(fragment.textContent);
+}
+createTl();
+////////////////////////////////////////       4       /////////////////////////////////////
+function createTl() {
+  let fragment = document.createDocumentFragment();
+  const allItems = document.createElement("span");
+  fragment.appendChild(allItems);
+
+  for (let index = 1; index <= 40; index++) {
+    let template = `.fromTo(".item${index}",{ id ="figure${index}", y: 0} , {  y: -listHeight,
+    ease: "none",})`;
     allItems.insertAdjacentHTML("beforeEnd", template);
   }
   console.log(fragment.textContent);
