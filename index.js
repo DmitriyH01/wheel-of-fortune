@@ -99,47 +99,44 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
-const BOXES = gsap.utils.toArray(".wheel_area__wheel__inner__list");
+const BOXES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
 
 const LOOP = gsap.timeline({
   repeat: -1,
   paused: true,
+  scrollTrigger: {
+    trigger: ".item40",
+    start: 2000,
+    end: 3000,
+    paused: true,
+    markers: true,
+  },
 });
 
-BOXES.forEach((BOX, index) => {
-  LOOP.fromTo(
-    BOX,
-    {
-      y: 0,
-    },
-    {
-      y: -7040,
-      duration: 1,
-      ease: "none",
-    }
-  );
-});
+LOOP.fromTo(
+  BOXES,
+  {
+    y: 0,
+  },
+  {
+    y: -7040,
+    duration: 1,
+    ease: "none",
+  }
+);
 
 function shiftWheel() {
   // console.log(tl.progress());
   // one.pause();
   if (startPressed) {
-    // tl.progress(0).then(tl.pause());
+    console.log(ScrollTrigger.positionInViewport(".item40", "top"));
     LOOP.play();
-    // tl0.3);
   }
   if (!startPressed) {
     console.log("stop");
     console.log(LOOP.labels);
 
-    // console.log(figure1.progress());
-
-    // gsap.to(tl, { progress: tl.labels["figure30"], ease: "none",duration:5 },"-=0.5");
     LOOP.pause();
-    // tl.pause();
-
-    // tl.pause();
-    // console.log(tl.totalProgress());
   }
   /////////////////////////////////////////////////////////////////////
 }
