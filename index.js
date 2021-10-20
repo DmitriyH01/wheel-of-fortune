@@ -1,6 +1,4 @@
 import { figures } from "./modules/storage.js";
-gsap.registerPlugin(MotionPathPlugin);
-gsap.registerPlugin(ScrollToPlugin);
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
@@ -26,7 +24,6 @@ document
   });
 
 function fillWheelContent(arr) {
-  // const reversedFigures = arr.reverse();
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
@@ -104,50 +101,29 @@ const FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
 const listHeight =
   document.querySelector(".wheel_area__wheel__inner__list").scrollHeight - 540;
 
-const LOOP = gsap.timeline({
-  repeat: -1,
-  paused: true,
-});
-
+const LOOP = gsap
+  .timeline({
+    repeat: -1,
+    paused: true,
+  })
+  .fromTo(
+    FIGURES,
+    { y: 0 },
+    { y: -listHeight, ease: "none", duration: 1, reversed: true }
+  );
 
 // LOOP.seek(getNestedLabelTime(LOOP, "figure20"));
-
-function getNestedLabelTime(timeline, label) {
-  console.log(timeline.labels);
-  let children = timeline.getChildren(true, true, true),
-    i = children.length,
-    tl,
-    time;
-  console.log(children);
-  while (i--) {
-    if (label in children[i].labels) {
-      tl = children[i];
-      time = tl.labels[label];
-      break;
-    }
-  }
-  if (tl) {
-    while (tl !== timeline) {
-      time = tl.startTime() + time / tl.timeScale();
-      tl = tl.parent;
-    }
-  }
-
-  return time;
-}
 
 function shiftWheel() {
   // console.log(LOOP.labels);
   // one.pause();
   if (startPressed) {
-    console.log(getNestedLabelTime(LOOP, "figure1"));
     LOOP.play();
   }
   if (!startPressed) {
     console.log("stop");
-    // console.log(getNestedLabelTime(LOOP, "figure10"));
+
     LOOP.pause();
-    // LOOP.seek(getNestedLabelTime(LOOP, "figure10")).pause();
   }
   /////////////////////////////////////////////////////////////////////
 }
