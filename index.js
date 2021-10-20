@@ -1,5 +1,5 @@
 import { figures } from "./modules/storage.js";
-gsap.registerPlugin(ScrollTrigger);
+// gsap.registerPlugin(ScrollTrigger);
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
@@ -24,13 +24,14 @@ document
     startPressed = true;
   });
 
-function fillWheelContent(figures) {
-  let figures42 = [...figures, figures[0], figures[1]];
+function fillWheelContent(arr) {
+  // const reversedFigures = arr.reverse();
+  console.log(figures);
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
 
-  figures42.forEach((el, index) => {
+  figures.forEach((el, index) => {
     let template = ` <li 
      class="wheel_area__wheel__inner__list__item item${index + 1}">
 
@@ -100,17 +101,12 @@ function randomInteger(min, max) {
 }
 
 const BOXES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+const listHeight =
+  document.querySelector(".wheel_area__wheel__inner__list").scrollHeight - 540;
 
 const LOOP = gsap.timeline({
   repeat: -1,
   paused: true,
-  scrollTrigger: {
-    trigger: ".item40",
-    start: 2000,
-    end: 3000,
-    paused: true,
-    markers: true,
-  },
 });
 
 LOOP.fromTo(
@@ -119,8 +115,8 @@ LOOP.fromTo(
     y: 0,
   },
   {
-    y: -7040,
-    duration: 1,
+    y: -listHeight,
+    duration: 20,
     ease: "none",
   }
 );
@@ -129,7 +125,7 @@ function shiftWheel() {
   // console.log(tl.progress());
   // one.pause();
   if (startPressed) {
-    console.log(ScrollTrigger.positionInViewport(".item40", "top"));
+    // console.log(ScrollTrigger.positionInViewport(".item40", "top"));
     LOOP.play();
   }
   if (!startPressed) {
