@@ -106,9 +106,9 @@ const moveDistance =
 const loopConfig = {
   repeat: -1,
   speed: 50,
-  paddingRight: -8000,
+  paddingRight: -7900,
   paused: false,
-  // reversed: true,
+  reversed: true,
 };
 // const LOOP = gsap
 //   .timeline({
@@ -149,7 +149,7 @@ function horizontalLoop(items, config) {
   items = gsap.utils.toArray(items);
   config = config || {};
 
-  console.log(items[1].offsetTop);
+  // console.log(items[1].offsetTop);
   let tl = gsap.timeline({
       repeat: config.repeat,
       paused: config.paused,
@@ -177,24 +177,24 @@ function horizontalLoop(items, config) {
       let w = (widths[i] = parseFloat(gsap.getProperty(el, "height", "px")));
       yPercents[i] = snap(
         (parseFloat(gsap.getProperty(el, "y", "px")) / w) * 100 +
-          gsap.getProperty(el, "yPercent")
+          gsap.getProperty(el, "y")
       );
       return yPercents[i];
     },
   });
   gsap.set(items, { y: 0 });
-  totalHeight =
-    items[length - 1].offsetTop +
-    (yPercents[length - 1] / 100) * widths[length - 1] -
-    startY +
-    items[length - 1].offsetTop *
-      gsap.getProperty(items[length - 1], "scaleY") +
-    (parseFloat(config.paddingRight) || 0);
+  totalHeight = items[length - 1].offsetTop;
+  // +
+  // (yPercents[length - 1] / 100) * widths[length - 1] -
+  // startY +
+  // items[length - 1].offsetTop *
+  //   gsap.getProperty(items[length - 1], "scaleY") +
+  // (parseFloat(config.paddingRight) || 0);
   console.log(totalHeight);
   for (i = 0; i < length; i++) {
     item = items[i];
     curY = (yPercents[i] / 100) * widths[i];
-    distanceToStart = item.offsetTop + curY - startY;
+    distanceToStart = item.offsetTop + curY - startY; ////   OVER THERE
     distanceToLoop =
       distanceToStart + widths[i] * gsap.getProperty(item, "scaleY");
     tl.to(
@@ -243,7 +243,7 @@ function horizontalLoop(items, config) {
   tl.current = () => curIndex;
   tl.toIndex = (index, vars) => toIndex(index, vars);
   tl.times = times;
-  // tl.progress(1, true).progress(0, true); // pre-render for performance
+  tl.progress(1, true).progress(0, true); // pre-render for performance
   if (config.reversed) {
     tl.vars.onReverseComplete();
     tl.reverse();
