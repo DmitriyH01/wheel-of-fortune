@@ -4,8 +4,6 @@ const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
 const BUTTONS = document.querySelector(".wheel_area__buttons_wrap");
 
-let count = 0;
-
 fillWheelContent(figures);
 fillTableContent(figures);
 
@@ -13,17 +11,17 @@ BUTTONS.addEventListener("click", (e) => {
   controlLoop(e.target);
 });
 
-function fillWheelContent(arr) {
+function fillWheelContent(contents) {
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
 
-  arr.forEach((el, index) => {
+  contents.forEach((el, index) => {
     let template = ` <li 
      class="wheel_area__wheel__inner__list__item item${index + 1}">
 
 
-          <img id="figure${index}" src=${el}></img>
+          <img src=${el}></img>
         </li>`;
     WHEEL.insertAdjacentHTML("beforeEnd", template);
   });
@@ -45,48 +43,6 @@ function fillTableContent(figures) {
   document.querySelector(".table").appendChild(fragment);
 }
 
-// function fillWheelWithRandomThreeFigures() {
-//   let fragment = document.createDocumentFragment();
-//   WHEEL.innerHTML = "";
-//   fragment.appendChild(WHEEL);
-
-//   count = randomInteger(0, 39);
-//   let maxThreeArr = [count, count + 1, count + 2];
-//   if (count === figures.length - 1) {
-//     maxThreeArr = [count, 0, 1];
-//   }
-//   if (count === figures.length - 2) {
-//     maxThreeArr = [count, count + 1, 0];
-//   }
-//   maxThreeArr.forEach((el) => {
-//     let template = ` <li class='wheel_area__wheel__inner__list__item'>
-//           <img src=${figures[el]}></img>
-//         </li>`;
-//     WHEEL.insertAdjacentHTML("beforeEnd", template);
-//   });
-//   setTimeout(
-//     () =>
-//       gsap.fromTo(
-//         ".wheel_area__wheel__inner__list__item",
-//         {
-//           y: 90,
-//         },
-//         {
-//           y: 0,
-//           ease: "bounce",
-//           duration: 2,
-//         }
-//       ),
-//     0.2
-//   );
-//   document.querySelector(".wheel_area__wheel__inner").appendChild(fragment);
-// }
-
-// function randomInteger(min, max) {
-//   let rand = min + Math.random() * (max + 1 - min);
-//   return Math.floor(rand);
-// }
-
 const FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
 const figuresWindow = 540;
 const moveDistance =
@@ -105,24 +61,54 @@ const runWheel = () =>
     }
   );
 
-// const stopWheel = ()=>
-// gsap.to()
+const stopWheel = () => {
+  const winFigures = getWinners();
+  console.log();
+  gsap.fromTo(
+    winFigures,
+    { y: 0 },
+    { y: -winFigures[0].getBoundingClientRect().y }
+  );
+};
+
 const LOOP = gsap
   .timeline({
     repeat: -1,
     paused: true,
   })
-  .add(runWheel());
+  .add(runWheel())
+  .addLabel("figuresCycl");
+
+function getWinners() {
+  let num = gsap.utils.random(1, 40, 1),
+    num1 = num + 1,
+    num2 = num + 2;
+
+  if (num === 39) {
+    num2 = 1;
+  }
+  if (num === 40) {
+    num1 = 1;
+    num2 = 2;
+  }
+  const winFigures = gsap.utils.toArray([
+    `.item${num}, .item${num1},.item${num2}`,
+  ]);
+  return winFigures;
+}
+
+function prepareWheel() {}
 
 function controlLoop(e) {
-  const random = gsap.utils.random(1, 40, 1);
-  console.log(random);
+  // console.log(getWinners());
   if (e.id === "start") {
     console.log();
     LOOP.isActive() ? alert("Press STOP before") : LOOP.play();
   }
   if (e.id === "stop") {
     LOOP.isActive() ? LOOP.pause() : alert("Press START before");
+    stopWheel();
   }
+  // console.log(LOOP.labels);
   return;
 }
