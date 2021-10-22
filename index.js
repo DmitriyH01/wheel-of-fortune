@@ -1,4 +1,5 @@
 import { figures } from "./modules/storage.js";
+gsap.registerPlugin(MotionPathPlugin);
 
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
@@ -48,6 +49,7 @@ const figuresWindow = 540;
 const moveDistance =
   document.querySelector(".wheel_area__wheel__inner__list").scrollHeight -
   figuresWindow;
+const firstItem = document.querySelector(".item1");
 
 const runWheel = () =>
   gsap.fromTo(
@@ -61,20 +63,24 @@ const runWheel = () =>
     }
   );
 
-const stopWheel = () => {
+const showWinnersFigures = () => {
   const winFigures = getWinners();
-  console.log();
-  gsap.fromTo(
-    winFigures,
-    { y: 0 },
-    { y: -winFigures[0].getBoundingClientRect().y }
+  const firstWinnerItem = document.querySelector(
+    `.${winFigures[0].classList[1]}`
   );
+  const moveCoordinate = MotionPathPlugin.getRelativePosition(
+    firstItem,
+    firstWinnerItem
+  );
+  console.log(moveCoordinate);
+  gsap.to(winFigures, { y: -moveCoordinate.y, opacity: 1 });
 };
 
 const LOOP = gsap
   .timeline({
     repeat: -1,
     paused: true,
+    opacity: 1,
   })
   .add(runWheel())
   .addLabel("figuresCycl");
@@ -97,18 +103,19 @@ function getWinners() {
   return winFigures;
 }
 
-function prepareWheel() {}
+const showOrHideFigures = {
+  start: () => gsap.set(FIGURES, { opacity: 1 }),
+  stop: () => gsap.set(FIGURES, { opacity: 0 }),
+};
 
 function controlLoop(e) {
-  // console.log(getWinners());
+  e.id === "start" || e.id === "stop" ? showOrHideFigures[e.id]() : null;
   if (e.id === "start") {
-    console.log();
     LOOP.isActive() ? alert("Press STOP before") : LOOP.play();
   }
   if (e.id === "stop") {
     LOOP.isActive() ? LOOP.pause() : alert("Press START before");
-    stopWheel();
+    showWinnersFigures();
   }
-  // console.log(LOOP.labels);
   return;
 }
