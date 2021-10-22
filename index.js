@@ -73,8 +73,24 @@ const showWinnersFigures = () => {
     firstItem,
     firstWinnerItem
   );
-  console.log(winFigures);
-  gsap.to(winFigures, { y: -moveCoordinate.y, opacity: 1, duration: 0.02 });
+
+  const tl = gsap
+    .timeline({})
+    .to(
+      winFigures,
+      {
+        y: -moveCoordinate.y,
+        opacity: 1,
+        duration: 0.02,
+      },
+      "stop"
+    )
+    .fromTo(
+      winFigures,
+      { y: -100 + -moveCoordinate.y },
+      { y: -moveCoordinate.y, ease: "bounce", duration: 1 },
+      "stop"
+    );
 };
 
 const LOOP = gsap
@@ -83,8 +99,7 @@ const LOOP = gsap
     paused: true,
     opacity: 1,
   })
-  .add(runWheel())
-  .addLabel("figuresCycl");
+  .add(runWheel());
 
 function getWinners() {
   let num = gsap.utils.random(1, 40, 1),
@@ -93,7 +108,6 @@ function getWinners() {
   const winFigures = gsap.utils.toArray([
     `.item${num}, .item${num1},.item${num2}`,
   ]);
-  console.log(num);
   return winFigures;
 }
 
