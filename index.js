@@ -13,11 +13,12 @@ BUTTONS.addEventListener("click", (e) => {
 });
 
 function fillWheelContent(contents) {
+  const figures42 = [...contents, contents[0], contents[1]];
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
 
-  contents.forEach((el, index) => {
+  figures42.forEach((el, index) => {
     let template = ` <li 
      class="wheel_area__wheel__inner__list__item item${index + 1}">
 
@@ -72,8 +73,8 @@ const showWinnersFigures = () => {
     firstItem,
     firstWinnerItem
   );
-  console.log(moveCoordinate);
-  gsap.to(winFigures, { y: -moveCoordinate.y, opacity: 1 });
+  console.log(winFigures);
+  gsap.to(winFigures, { y: -moveCoordinate.y, opacity: 1, duration: 0.02 });
 };
 
 const LOOP = gsap
@@ -89,17 +90,10 @@ function getWinners() {
   let num = gsap.utils.random(1, 40, 1),
     num1 = num + 1,
     num2 = num + 2;
-
-  if (num === 39) {
-    num2 = 1;
-  }
-  if (num === 40) {
-    num1 = 1;
-    num2 = 2;
-  }
   const winFigures = gsap.utils.toArray([
     `.item${num}, .item${num1},.item${num2}`,
   ]);
+  console.log(num);
   return winFigures;
 }
 
