@@ -112,8 +112,9 @@ function getWinners() {
 }
 
 const showOrHideFigures = {
-  start: () => gsap.set(FIGURES, { opacity: 1 }),
-  stop: () => gsap.set(FIGURES, { opacity: 0 }),
+  start: () =>
+    gsap.set(FIGURES, { opacity: 1, "-webkit-filter": "blur(25px)" }),
+  stop: () => gsap.set(FIGURES, { opacity: 0, "-webkit-filter": "blur(0px)" }),
 };
 
 function controlLoop(e) {
@@ -127,3 +128,5 @@ function controlLoop(e) {
   }
   return;
 }
+
+
