@@ -59,13 +59,14 @@ const runWheel = () =>
     {
       y: -moveDistance,
       ease: "none",
-      duration: 1.1,
+      duration: 1.5, //1.1
       reversed: true,
     }
   );
 
 const showWinnersFigures = () => {
   const winFigures = getWinners();
+  console.log(winFigures);
   const firstWinnerItem = document.querySelector(
     `.${winFigures[0].classList[1]}`
   );
@@ -76,21 +77,13 @@ const showWinnersFigures = () => {
 
   const tl = gsap
     .timeline({})
-    .to(
-      winFigures,
-      {
-        y: -moveCoordinate.y,
-        opacity: 1,
-        duration: 0.02,
-      },
-      "stop"
-    )
+
     .fromTo(
-      winFigures,
-      { y: -100 + -moveCoordinate.y },
-      { y: -moveCoordinate.y, ease: "bounce", duration: 1 },
-      "stop"
-    );
+      FIGURES,
+      { y: -1000 + -moveCoordinate.y },
+      { y: -moveCoordinate.y + 100, ease: "bounceOut", duration: 3 }
+    )
+    .to(FIGURES, { y: -moveCoordinate.y, duration: 1, ease: "bounce" });
 };
 
 const LOOP = gsap
@@ -111,14 +104,14 @@ function getWinners() {
   return winFigures;
 }
 
-const showOrHideFigures = {
-  start: () =>
-    gsap.set(FIGURES, { opacity: 1, "-webkit-filter": "blur(25px)" }),
-  stop: () => gsap.set(FIGURES, { opacity: 0, "-webkit-filter": "blur(0px)" }),
+const blurOrNot = {
+  start: () => gsap.set(FIGURES, { "-webkit-filter": "blur(15px)" }),
+  stop: () => gsap.set(FIGURES, { "-webkit-filter": "blur(0px)" }),
 };
 
 function controlLoop(e) {
-  e.id === "start" || e.id === "stop" ? showOrHideFigures[e.id]() : null;
+  e.id === "start" || e.id === "stop" ? blurOrNot[e.id]() : null;
+
   if (e.id === "start") {
     LOOP.isActive() ? alert("Press STOP before") : LOOP.play();
   }
@@ -128,5 +121,3 @@ function controlLoop(e) {
   }
   return;
 }
-
-
