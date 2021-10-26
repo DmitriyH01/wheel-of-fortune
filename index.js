@@ -13,12 +13,12 @@ BUTTONS.addEventListener("click", (e) => {
 });
 
 function fillWheelContent(contents) {
-  const figures42 = [...contents, contents[0], contents[1]];
+  // const figures42 = [...contents, contents[0], contents[1]];
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
 
-  figures42.forEach((el, index) => {
+  contents.forEach((el, index) => {
     let template = ` <li 
      class="wheel_area__wheel__inner__list__item item${index + 1}">
 
@@ -65,14 +65,10 @@ const runWheel = () =>
   );
 
 const showWinnersFigures = () => {
-  const winFigures = getWinners();
-  console.log(winFigures);
-  const firstWinnerItem = document.querySelector(
-    `.${winFigures[0].classList[1]}`
-  );
+  const winnerItem = getWinners();
   const moveCoordinate = MotionPathPlugin.getRelativePosition(
     firstItem,
-    firstWinnerItem
+    winnerItem
   );
 
   const tl = gsap
@@ -95,13 +91,9 @@ const LOOP = gsap
   .add(runWheel());
 
 function getWinners() {
-  let num = gsap.utils.random(1, 40, 1),
-    num1 = num + 1,
-    num2 = num + 2;
-  const winFigures = gsap.utils.toArray([
-    `.item${num}, .item${num1},.item${num2}`,
-  ]);
-  return winFigures;
+  let num = gsap.utils.random(1, 40, 1);
+  const winFigure = document.querySelector(`.item${num}`);
+  return winFigure;
 }
 
 const blurOrNot = {
