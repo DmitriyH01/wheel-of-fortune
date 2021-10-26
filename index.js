@@ -13,7 +13,6 @@ BUTTONS.addEventListener("click", (e) => {
 });
 
 function fillWheelContent(contents) {
-  // const figures42 = [...contents, contents[0], contents[1]];
   let fragment = document.createDocumentFragment();
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
@@ -45,12 +44,12 @@ function fillTableContent(figures) {
   document.querySelector(".table").appendChild(fragment);
 }
 
-const FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+let FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
 const figuresWindow = 540;
 const moveDistance =
   document.querySelector(".wheel_area__wheel__inner__list").scrollHeight -
   figuresWindow;
-const firstItem = document.querySelector(".item1");
+const firstFigure = document.querySelector(".item1");
 
 const runWheel = () =>
   gsap.fromTo(
@@ -59,27 +58,76 @@ const runWheel = () =>
     {
       y: -moveDistance,
       ease: "none",
-      duration: 1.5, //1.1
+      duration: 1.1, //1.1
       reversed: true,
     }
   );
 
-const showWinnersFigures = () => {
-  const winnerItem = getWinners();
-  const moveCoordinate = MotionPathPlugin.getRelativePosition(
-    firstItem,
-    winnerItem
-  );
+const showWinnersFigures = (elements) => {
+  const winnerItems = getWinner(elements);
+  const thirtyFive = elements[35];
+  const thirtyFour = elements[34];
+  const winnerFigure = winnerItems.winFigure;
+  const winnerNum = winnerItems.num;
 
-  const tl = gsap
-    .timeline({})
+  const tl = gsap.timeline();
 
-    .fromTo(
+  const distances = {
+    allLength: MotionPathPlugin.getRelativePosition(
+      firstFigure,
+      elements[elements.length - 1]
+    ).y,
+    winnerMove: MotionPathPlugin.getRelativePosition(firstFigure, winnerFigure)
+      .y,
+    toLastFive: MotionPathPlugin.getRelativePosition(firstFigure, thirtyFour).y,
+    fromThirtyFiveToFirst: MotionPathPlugin.getRelativePosition(
+      firstFigure,
+      thirtyFive
+    ).y,
+  };
+
+  const finalShift = () => {
+    FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+    tl.fromTo(
       FIGURES,
-      { y: -1000 + -moveCoordinate.y },
-      { y: -moveCoordinate.y + 100, ease: "bounceOut", duration: 3 }
-    )
-    .to(FIGURES, { y: -moveCoordinate.y, duration: 1, ease: "bounce" });
+      { y: -1000 + -distances.winnerMove },
+      { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
+    ).to(FIGURES, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
+  };
+
+  const prepareFigure = () => {
+    const lastFiveFigures = elements.slice(35, 40);
+    tl.fromTo(
+      elements,
+      { y: 0 },
+      { y: distances.allLength - distances.toLastFive, duration: 1 }
+    ).to(lastFiveFigures, {
+      y: -distances.fromThirtyFiveToFirst,
+      duration: 1,
+    });
+    const changed = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+    console.log(changed);
+    // .fromTo(
+    //   elements,
+    //   { y: -1000 + -distances.winnerMove },
+    //   { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
+    // )
+    // .to(elements, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
+  };
+
+  if (winnerNum === 1) {
+    prepareFigure();
+  }
+
+  if (winnerNum >= 33) {
+    console.log(FIGURES);
+  }
+
+  // tl.fromTo(
+  //   FIGURES,
+  //   { y: -1000 + -distances.winnerMove },
+  //   { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
+  // ).to(FIGURES, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
 };
 
 const LOOP = gsap
@@ -90,10 +138,11 @@ const LOOP = gsap
   })
   .add(runWheel());
 
-function getWinners() {
-  let num = gsap.utils.random(1, 40, 1);
+function getWinner(elements) {
+  // const num = gsap.utils.random(1, elements.length, 1);
+  const num = 1;
   const winFigure = document.querySelector(`.item${num}`);
-  return winFigure;
+  return { winFigure, num };
 }
 
 const blurOrNot = {
@@ -109,7 +158,7 @@ function controlLoop(e) {
   }
   if (e.id === "stop") {
     LOOP.isActive() ? LOOP.pause() : alert("Press START before");
-    showWinnersFigures();
+    showWinnersFigures(FIGURES);
   }
   return;
 }
