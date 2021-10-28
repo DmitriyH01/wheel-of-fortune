@@ -12,12 +12,53 @@ BUTTONS.addEventListener("click", (e) => {
   controlLoop(e.target);
 });
 
+const FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+const figuresWindow = 540;
+const moveDistance =
+  document.querySelector(".wheel_area__wheel__inner__list").scrollHeight -
+  figuresWindow;
+const firstFigure = document.querySelector(".item1");
+
+const getToStartPosition = () => {
+  gsap.to(FIGURES, {
+    y: -MotionPathPlugin.getRelativePosition(firstFigure, FIGURES[5]).y,
+    duration: 0.1,
+  });
+};
+
+getToStartPosition();
+
+const runWheel = () =>
+  gsap.fromTo(
+    FIGURES,
+    { y: 0 },
+    {
+      y: -moveDistance,
+      ease: "none",
+      duration: 1.1,
+      reversed: true,
+    }
+  );
+
+const LOOP = gsap
+  .timeline({
+    repeat: -1,
+    paused: true,
+    opacity: 1,
+  })
+  .add(runWheel());
+
 function fillWheelContent(contents) {
   let fragment = document.createDocumentFragment();
+  const moreFigures = [
+    ...contents.slice(35, contents.length),
+    ...contents,
+    ...contents.slice(0, 9),
+  ];
   WHEEL.innerHTML = "";
   fragment.appendChild(WHEEL);
 
-  contents.forEach((el, index) => {
+  moreFigures.forEach((el, index) => {
     let template = ` <li 
      class="wheel_area__wheel__inner__list__item item${index + 1}">
 
@@ -44,85 +85,31 @@ function fillTableContent(figures) {
   document.querySelector(".table").appendChild(fragment);
 }
 
-let FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
-const figuresWindow = 540;
-const moveDistance =
-  document.querySelector(".wheel_area__wheel__inner__list").scrollHeight -
-  figuresWindow;
-const firstFigure = document.querySelector(".item1");
-
-const runWheel = () =>
-  gsap.fromTo(
-    FIGURES,
-    { y: 0 },
-    {
-      y: -moveDistance,
-      ease: "none",
-      duration: 1.1,
-      reversed: true,
-    }
-  );
-
-const showWinnersFigures = (elements) => {
-  const winnerItems = getWinner(elements);
-  let winnerFigure = winnerItems.winFigure;
-  const winNum = winnerItems.num;
-  let mixedLastFiveBeforeFirst;
+function showWinnersFigures(elements) {
+  const winnerFigure = getWinner();
 
   const tl = gsap.timeline();
 
-  if (winNum === 1) {
-    mixedLastFiveBeforeFirst = [
-      ...elements.slice(35, elements.length),
-      ...elements.slice(0, 35),
-    ];
-    // const lastFive = elements.slice(35, elements.length);
-    // const fromBeginToLastFive = elements.slice(0, 35);
-    // mixedLastFiveBeforeFirst = [...lastFive, ...fromBeginToLastFive];
-    // // fillWheelContent(mixedLastFiveBeforeFirst);
-    // // FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
-    // // winnerFigure = FIGURES[6];
-    // console.log(mixedLastFiveBeforeFirst);
-    // console.log(winnerFigure);
-  }
-
   const distances = {
-    allLength: MotionPathPlugin.getRelativePosition(
-      firstFigure,
-      elements[elements.length - 1]
-    ).y,
     winnerMove: MotionPathPlugin.getRelativePosition(firstFigure, winnerFigure)
       .y,
   };
 
-  if (winNum >= 33) {
-    console.log(FIGURES);
-  }
-
   tl.fromTo(
-    FIGURES,
+    elements,
     { y: -1000 + -distances.winnerMove },
     { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
-  ).to(FIGURES, {
+  ).to(elements, {
     y: -distances.winnerMove,
     duration: 1,
     ease: "bounce",
   });
-};
+}
 
-const LOOP = gsap
-  .timeline({
-    repeat: -1,
-    paused: true,
-    opacity: 1,
-  })
-  .add(runWheel());
-
-function getWinner(elements) {
-  // const num = gsap.utils.random(1, elements.length, 1);
-  const num = 1;
+function getWinner() {
+  const num = gsap.utils.random(6, 45, 1);
   const winFigure = document.querySelector(`.item${num}`);
-  return { winFigure, num };
+  return winFigure;
 }
 
 const blurOrNot = {
@@ -138,7 +125,7 @@ function controlLoop(e) {
   }
   if (e.id === "stop") {
     LOOP.isActive() ? LOOP.pause() : alert("Press START before");
-    showWinnersFigures(figures);
+    showWinnersFigures(FIGURES);
   }
   return;
 }
