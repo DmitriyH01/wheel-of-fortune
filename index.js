@@ -58,19 +58,33 @@ const runWheel = () =>
     {
       y: -moveDistance,
       ease: "none",
-      duration: 1.1, //1.1
+      duration: 1.1,
       reversed: true,
     }
   );
 
 const showWinnersFigures = (elements) => {
   const winnerItems = getWinner(elements);
-  const thirtyFive = elements[35];
-  const thirtyFour = elements[34];
-  const winnerFigure = winnerItems.winFigure;
-  const winnerNum = winnerItems.num;
+  let winnerFigure = winnerItems.winFigure;
+  const winNum = winnerItems.num;
+  let mixedLastFiveBeforeFirst;
 
   const tl = gsap.timeline();
+
+  if (winNum === 1) {
+    mixedLastFiveBeforeFirst = [
+      ...elements.slice(35, elements.length),
+      ...elements.slice(0, 35),
+    ];
+    // const lastFive = elements.slice(35, elements.length);
+    // const fromBeginToLastFive = elements.slice(0, 35);
+    // mixedLastFiveBeforeFirst = [...lastFive, ...fromBeginToLastFive];
+    // // fillWheelContent(mixedLastFiveBeforeFirst);
+    // // FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
+    // // winnerFigure = FIGURES[6];
+    // console.log(mixedLastFiveBeforeFirst);
+    // console.log(winnerFigure);
+  }
 
   const distances = {
     allLength: MotionPathPlugin.getRelativePosition(
@@ -79,55 +93,21 @@ const showWinnersFigures = (elements) => {
     ).y,
     winnerMove: MotionPathPlugin.getRelativePosition(firstFigure, winnerFigure)
       .y,
-    toLastFive: MotionPathPlugin.getRelativePosition(firstFigure, thirtyFour).y,
-    fromThirtyFiveToFirst: MotionPathPlugin.getRelativePosition(
-      firstFigure,
-      thirtyFive
-    ).y,
   };
 
-  const finalShift = () => {
-    FIGURES = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
-    tl.fromTo(
-      FIGURES,
-      { y: -1000 + -distances.winnerMove },
-      { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
-    ).to(FIGURES, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
-  };
-
-  const prepareFigure = () => {
-    const lastFiveFigures = elements.slice(35, 40);
-    tl.fromTo(
-      elements,
-      { y: 0 },
-      { y: distances.allLength - distances.toLastFive, duration: 1 }
-    ).to(lastFiveFigures, {
-      y: -distances.fromThirtyFiveToFirst,
-      duration: 1,
-    });
-    const changed = gsap.utils.toArray(".wheel_area__wheel__inner__list__item");
-    console.log(changed);
-    // .fromTo(
-    //   elements,
-    //   { y: -1000 + -distances.winnerMove },
-    //   { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
-    // )
-    // .to(elements, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
-  };
-
-  if (winnerNum === 1) {
-    prepareFigure();
-  }
-
-  if (winnerNum >= 33) {
+  if (winNum >= 33) {
     console.log(FIGURES);
   }
 
-  // tl.fromTo(
-  //   FIGURES,
-  //   { y: -1000 + -distances.winnerMove },
-  //   { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
-  // ).to(FIGURES, { y: -distances.winnerMove, duration: 1, ease: "bounce" });
+  tl.fromTo(
+    FIGURES,
+    { y: -1000 + -distances.winnerMove },
+    { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
+  ).to(FIGURES, {
+    y: -distances.winnerMove,
+    duration: 1,
+    ease: "bounce",
+  });
 };
 
 const LOOP = gsap
@@ -158,7 +138,7 @@ function controlLoop(e) {
   }
   if (e.id === "stop") {
     LOOP.isActive() ? LOOP.pause() : alert("Press START before");
-    showWinnersFigures(FIGURES);
+    showWinnersFigures(figures);
   }
   return;
 }
