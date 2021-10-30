@@ -5,7 +5,7 @@ body {
   background: #007000;
   margin: 0 auto;
 }
-/* TABLE */
+
 .table {
   position: absolute;
   width: 1782px;
@@ -52,8 +52,6 @@ body {
   width: 90px;
   height: 90px;
 }
-
-/* WHEEL */
 
 .wheel_area {
   position: absolute;
@@ -111,7 +109,6 @@ body {
   overflow: hidden;
 }
 .wheel_area__wheel__inner__list__item {
-  /* position: absolute; */
   display: grid;
   max-width: 150px;
   height: 150px;

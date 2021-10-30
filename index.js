@@ -4,6 +4,8 @@ gsap.registerPlugin(MotionPathPlugin);
 const WHEEL = document.querySelector(".wheel_area__wheel__inner__list");
 const TABLE = document.querySelector(".table__figures");
 const BUTTONS = document.querySelector(".wheel_area__buttons_wrap");
+const START = document.querySelector("#start");
+const STOP = document.querySelector("#stop");
 
 fillWheelContent(figures);
 fillTableContent(figures);
@@ -87,8 +89,10 @@ function fillTableContent(figures) {
 
 function showWinnersFigures(elements) {
   const winnerFigure = getWinner();
+  const startButtonOn = () => (START.disabled = false);
+  const stopButtonOff = () => (STOP.disabled = true);
 
-  const tl = gsap.timeline();
+  const tl = gsap.timeline({});
 
   const distances = {
     winnerMove: MotionPathPlugin.getRelativePosition(firstFigure, winnerFigure)
@@ -98,11 +102,17 @@ function showWinnersFigures(elements) {
   tl.fromTo(
     elements,
     { y: -1000 + -distances.winnerMove },
-    { y: -distances.winnerMove + 100, ease: "bounceOut", duration: 3 }
+    {
+      y: -distances.winnerMove + 100,
+      ease: "bounceOut",
+      duration: 3,
+      onStart: stopButtonOff,
+    }
   ).to(elements, {
     y: -distances.winnerMove,
     duration: 1,
     ease: "bounce",
+    onComplete: startButtonOn,
   });
 }
 
@@ -118,14 +128,17 @@ const blurOrNot = {
 };
 
 function controlLoop(e) {
-  e.id === "start" || e.id === "stop" ? blurOrNot[e.id]() : null;
+  e === START || e === STOP ? blurOrNot[e.id]() : null;
 
-  if (e.id === "start") {
-    LOOP.isActive() ? alert("Press STOP before") : LOOP.play();
+  if (e === START) {
+    STOP.disabled = false;
+    LOOP.isActive() ? null : LOOP.play();
+    START.disabled = true;
   }
-  if (e.id === "stop") {
-    LOOP.isActive() ? LOOP.pause() : alert("Press START before");
-    showWinnersFigures(FIGURES);
+
+  if (e === STOP) {
+    LOOP.isActive() ? LOOP.pause() : null;
+    !STOP.disabled ? showWinnersFigures(FIGURES) : null;
   }
   return;
 }
