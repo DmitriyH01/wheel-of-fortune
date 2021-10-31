@@ -19,11 +19,13 @@ const figuresWindow = 540;
 const moveDistance =
   document.querySelector(".wheel_area__wheel__inner__list").scrollHeight -
   figuresWindow;
-const firstFigure = document.querySelector(".item1");
+const firstFigure = document.querySelector("#item1");
+const startFigure = FIGURES[5];
+let winnerFigure = null;
 
 const getToStartPosition = () => {
   gsap.to(FIGURES, {
-    y: -MotionPathPlugin.getRelativePosition(firstFigure, FIGURES[5]).y,
+    y: -MotionPathPlugin.getRelativePosition(firstFigure, startFigure).y,
     duration: 0.1,
   });
 };
@@ -61,8 +63,8 @@ function fillWheelContent(contents) {
   fragment.appendChild(WHEEL);
 
   moreFigures.forEach((el, index) => {
-    let template = ` <li 
-     class="wheel_area__wheel__inner__list__item item${index + 1}">
+    let template = ` <li id ="item${index + 1}"
+     class="wheel_area__wheel__inner__list__item">
 
 
           <img src=${el}></img>
@@ -79,7 +81,7 @@ function fillTableContent(figures) {
 
   figures.forEach(function (figure, index) {
     let template = `  
-           <li id = ${index}>
+           <li >
       <img src=${figure} alt=""></img>
     </li>`;
     TABLE.insertAdjacentHTML("beforeEnd", template);
@@ -87,23 +89,39 @@ function fillTableContent(figures) {
   document.querySelector(".table").appendChild(fragment);
 }
 
-function showWinnersFigures(elements) {
-  const winnerFigure = getWinner();
+function showRandomFigures(elements) {
+  winnerFigure = getRandomFigure();
   const startButtonOn = () => (START.disabled = false);
   const stopButtonOff = () => (STOP.disabled = true);
 
-  const tl = gsap.timeline({});
+  const checkWin = () => {
+    const secondItem = winnerFigure.nextElementSibling,
+      thirdItem = secondItem.nextElementSibling;
+    if (
+      secondItem.children[0].attributes[0].nodeValue ===
+        winnerFigure.children[0].attributes[0].nodeValue &&
+      thirdItem.children[0].attributes[0].nodeValue ===
+        winnerFigure.children[0].attributes[0].nodeValue
+    ) {
+      alert("You are lucky");
+    }
+    startButtonOn();
+  };
+
+  const tl = gsap.timeline();
 
   const distances = {
     winnerMove: MotionPathPlugin.getRelativePosition(firstFigure, winnerFigure)
       .y,
+    beginSmoothStop: 1000,
+    elementOffBounds: 120,
   };
 
   tl.fromTo(
     elements,
-    { y: -1000 + -distances.winnerMove },
+    { y: -distances.beginSmoothStop + -distances.winnerMove },
     {
-      y: -distances.winnerMove + 100,
+      y: -distances.winnerMove + distances.elementOffBounds,
       ease: "bounceOut",
       duration: 3,
       onStart: stopButtonOff,
@@ -112,18 +130,18 @@ function showWinnersFigures(elements) {
     y: -distances.winnerMove,
     duration: 1,
     ease: "bounce",
-    onComplete: startButtonOn,
+    onComplete: checkWin,
   });
 }
 
-function getWinner() {
+function getRandomFigure() {
   const num = gsap.utils.random(6, 45, 1);
-  const winFigure = document.querySelector(`.item${num}`);
-  return winFigure;
+  const randomItem = document.querySelector(`#item${num}`);
+  return randomItem;
 }
 
 const blurOrNot = {
-  start: () => gsap.set(FIGURES, { "-webkit-filter": "blur(15px)" }),
+  start: () => gsap.set(FIGURES, { "-webkit-filter": "blur(20px)" }),
   stop: () => gsap.set(FIGURES, { "-webkit-filter": "blur(0px)" }),
 };
 
@@ -138,7 +156,7 @@ function controlLoop(e) {
 
   if (e === STOP) {
     LOOP.isActive() ? LOOP.pause() : null;
-    !STOP.disabled ? showWinnersFigures(FIGURES) : null;
+    !STOP.disabled ? showRandomFigures(FIGURES) : null;
   }
   return;
 }
